@@ -18,6 +18,12 @@ const params = defineProps({
   },
   'size': {
     type: Number
+  },
+  'allowResize': {
+    type: Boolean
+  },
+  'allowRemove': {
+    type: Boolean
   }
 })
 const resizeDialog = ref(false)
@@ -127,8 +133,13 @@ const confirm_remove = () => {
       <Button label="Resize"
               size="small"
               severity="success"
+              :disabled="!params.allowResize"
               @click="resizeDialog=true"/>
-      <Button label="Remove" size="small" severity="danger" @click="confirm_remove"/>
+      <Button label="Remove"
+              size="small"
+              severity="danger"
+              :disabled="!params.allowRemove"
+              @click="confirm_remove"/>
     </ButtonGroup>
 
   </div>

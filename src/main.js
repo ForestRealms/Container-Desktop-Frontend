@@ -31,10 +31,10 @@ axios.interceptors.response.use(
             router.push({name: "login"})
             return Promise.reject(error)
         }
-        if (error.response.status === 403 && error.response.data.message === 'Forbidden') {
-            router.back();
-            return Promise.reject(error)
-        }
+        // if (error.response.status === 403 && error.response.data.message === 'Forbidden') {
+        //     router.back();
+        //     return Promise.reject(error)
+        // }
     }
 )
 app.mount("#app")

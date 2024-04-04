@@ -49,7 +49,10 @@ getData()
                                  :size="row.data.size"
                                  :id="row.data.id"
                                  :container-ids="row.data.container_ids"/>
-            <VolumeActionPanel :id="row.data.id" :size="row.data.size"/>
+            <VolumeActionPanel :id="row.data.id"
+                               :size="row.data.size"
+                               :allow-remove="row.data.container_ids.length === 0"
+                               :allow-resize="row.data.container_ids.length === 0"/>
           </div>
 
 

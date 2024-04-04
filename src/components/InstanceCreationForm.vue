@@ -8,8 +8,13 @@ import Stepper from "primevue/stepper";
 import StepperPanel from "primevue/stepperpanel";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import Password from "primevue/password";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 import {ref} from "vue";
 import axios from "axios";
+import router from "@/router/index.js";
+const toast = useToast()
 const maxVCPUs = ref(0)
 const customName = ref('')
 const images = ref([])
@@ -17,6 +22,9 @@ const selectedImage = ref({})
 const vCPUS = ref(1)
 const RAM = ref(1)
 const rootDisk = ref(1);
+const connectedNetwork = ref('')
+const password = ref('')
+const password2 = ref('')
 const getMaxVCPUs = () => {
   const config = {
     method: 'get',
@@ -72,11 +80,39 @@ const getVolumes = () => {
       });
 }
 getVolumes()
+const networks = ref([])
+const getNetworks = () => {
+  const config = {
+    method: 'get',
+    url: '/network/',
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+    }
+  };
+
+  axios(config)
+      .then(response => {
+        networks.value = response.data.details
+      })
+      .catch(error => {
+        console.log(error);
+      });
+}
+getNetworks()
 const mounted_volumes = ref([])
 const editingRows = ref([]);
 const addVolumeRow = () => {
+  if (volumes.value.length === 0) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Warning',
+      detail: 'You owned no volume',
+      life: 2500
+    })
+    return
+  }
   mounted_volumes.value.push({
-    "id": "",
+    "id": volumes.value[0].id,
     "path": ""
   })
   console.log(mounted_volumes.value)
@@ -88,6 +124,108 @@ const onRowEditSave = (event) => {
 const removeMountedVolumes = (index) => {
   mounted_volumes.value.splice(index, 1)
 }
+
+const next = {
+  "step1": () => {
+    if (customName.value.replaceAll(/\s/g, '') === '') {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please Specify Instance Name',
+        life: 2500
+      })
+      return false
+    }
+    if (Object.keys(selectedImage.value).length === 0) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please Specify Image',
+        life: 2500
+      })
+      return false
+    }
+    if (password.value === '' || password2.value === '') {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please Specify the password!',
+        life: 2500
+      })
+      return false
+    }
+    if (password.value !== password2.value) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'The two passwords are different',
+        life: 2500
+      })
+      return false
+    }
+    return true
+  },
+  "step2": () => {
+    for (const mountedVolume of mounted_volumes.value) {
+      if (mountedVolume.path.replaceAll(/\s/g, '') === '') {
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Please Specify the mount point of volume ' + mountedVolume.id,
+          life: 2500
+        })
+        return false
+      }
+    }
+    return true
+  }
+}
+
+const create = () => {
+  const data = JSON.stringify({
+    "vcpus": vCPUS.value,
+    "ram": RAM.value*1024,
+    "root_disk": rootDisk.value,
+    "image_id": selectedImage.value.id,
+    "network_id": connectedNetwork.value.id,
+    "volumes": mounted_volumes.value,
+    "custom_name": customName.value,
+    "env": {
+      "VNC_PASSWD": password.value
+    }
+  });
+  console.log("创建！")
+  const config = {
+    method: 'post',
+    url: '/containers/',
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+
+  axios(config)
+      .then(response => {
+        start_button_disabled.value = true
+        toast.add({
+          severity: 'success',
+          summary: 'Notification',
+          detail: 'Instance ' + response.data.details.custom_name + ' was successfully created!',
+          life: 2500
+        })
+        setInterval(() => {
+          router.push({name: 'instances'})
+        }, 1000)
+
+      })
+      .catch(error => {
+        console.log(error);
+        start_button_disabled.value = false
+      });
+
+}
+const start_button_disabled = ref(false)
 </script>
 
 <template>
@@ -102,6 +240,7 @@ const removeMountedVolumes = (index) => {
             </div>
             <InputText id="customName"
                        v-model="customName"
+                       :invalid="customName.replaceAll(/\s/g, '') === ''"
                        placeholder="Name of your Cloud Desktop Instance"
                        style="width: 50vw"></InputText>
           </div>
@@ -110,8 +249,9 @@ const removeMountedVolumes = (index) => {
               <label class="inline">Image</label>
             </div>
             <Dropdown style="width: 50vw"
+                      :invalid="Object.keys(selectedImage).length === 0"
                       v-model="selectedImage"
-                      :options="images"
+                      :options="images.filter(image => image.available)"
                       option-label="name" placeholder="Select an Image"/>
           </div>
           <div class="flex gap" v-if="selectedImage.id">
@@ -174,8 +314,24 @@ const removeMountedVolumes = (index) => {
               GB
             </div>
           </div>
+          <div style="display: flex; align-items: center" class="gap">
+            <div>
+              <label>Instance Password</label>
+            </div>
+            <Password v-model="password" :feedback="false"/>
+          </div>
+          <div style="display: flex; align-items: center" class="gap">
+            <div>
+              <label>Repeat Instance Password</label>
+            </div>
+            <Password v-model="password2" :feedback="false" :invalid="password2 !== password"/>
+          </div>
+
           <div style="display: flex; justify-content: end">
-            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="nextCallback" />
+            <Button label="Next"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    @click="next.step1() && nextCallback($event)" />
           </div>
         </template>
       </StepperPanel>
@@ -228,16 +384,23 @@ const removeMountedVolumes = (index) => {
                       icon="pi pi-plus" @click="addVolumeRow"/>
             </div>
           </div>
-
           <div style="display: flex; justify-content: space-between">
             <Button severity="secondary" label="Back" icon="pi pi-arrow-left" iconPos="left" @click="prevCallback" />
-            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="nextCallback" />
+            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="next.step2() && nextCallback($event)" />
           </div>
         </template>
       </StepperPanel>
       <StepperPanel header="Network Configuration">
         <template #content="{prevCallback, nextCallback}">
-
+          <div class="flex-row" style="margin-bottom: 0.7rem; align-items: center">
+            <div>
+              Connect to Network
+            </div>
+            <Dropdown :options="networks"
+                      option-label="name"
+                      placeholder="Select a network to connect"
+                      v-model="connectedNetwork"/>
+          </div>
           <div class="flex" style="justify-content: space-between">
             <Button severity="secondary" label="Back" icon="pi pi-arrow-left" iconPos="left" @click="prevCallback" />
             <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="nextCallback" />
@@ -245,6 +408,58 @@ const removeMountedVolumes = (index) => {
         </template>
       </StepperPanel>
       <StepperPanel header="Confirmation">
+        <template #content="{prevCallback}">
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem">
+            <div style="margin-right: 0.5rem">Instance Name:</div>
+            <div>{{customName}}</div>
+          </div>
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem" >
+            <div style="margin-right: 0.5rem">Image:</div>
+            <div>{{selectedImage.name}}</div>
+          </div>
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem">
+            <div style="margin-right: 0.5rem">CPU Count:</div>
+            <div>{{vCPUS}}</div>
+          </div>
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem">
+            <div style="margin-right: 0.5rem">RAM:</div>
+            <div>{{RAM}} GB</div>
+          </div>
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem">
+            <div style="margin-right: 0.5rem">Root Disk:</div>
+            <div>{{rootDisk}} GB</div>
+          </div>
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem">
+            <div style="margin-right: 0.7rem">
+              Mounted Volumes: {{mounted_volumes.length === 0? 'No Mounted Volume': ''}}
+            </div>
+            <DataTable :value="mounted_volumes" style="width: 100%" v-if="mounted_volumes.length !== 0">
+              <Column field="id" header="ID">
+                <template #body="row">
+                  {{row.data.id.substring(0, 12)}}
+                </template>
+              </Column>
+              <Column field="path" header="Mount Point"></Column>
+            </DataTable>
+          </div>
+          <div class="flex-row" style="align-items: center; margin-bottom: 0.7rem">
+            <div style="margin-right: 0.7rem">
+              Connected Network:
+            </div>
+            <div>
+              {{connectedNetwork.name}}
+            </div>
+          </div>
+          <div class="flex" style="justify-content: space-between">
+            <Button severity="secondary" label="Back" icon="pi pi-arrow-left" iconPos="left" @click="prevCallback" />
+            <Button label="Start Now"
+                    icon="pi pi-arrow-right"
+                    icon-pos="right"
+                    severity="success"
+                    :disabled="start_button_disabled"
+                    @click="create" />
+          </div>
+        </template>
 
       </StepperPanel>
     </Stepper>
@@ -260,6 +475,10 @@ const removeMountedVolumes = (index) => {
 .inline {
   margin-right: var(--inline-spacing)
 }
+.flex-row {
+  display: flex;
+  flex-direction: row
+}
 .form-items {
   display: flex;
   flex-direction: row;
@@ -270,4 +489,4 @@ const removeMountedVolumes = (index) => {
 .p-stepper {
   flex-basis: 50rem;
 }
-</style
+</style>

@@ -4,9 +4,15 @@ import Column from "primevue/column";
 import Tag from "primevue/tag";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
+import ConfirmDialog from 'primevue/confirmdialog';
+import Toast from "primevue/toast";
+import { useConfirm } from "primevue/useconfirm";
+import {useToast} from "primevue/usetoast";
 import axios from "axios";
 import {ref} from "vue";
 import UserDetailsViewer from "@/components/UserDetailsViewer.vue";
+const confirm = useConfirm()
+const toast = useToast();
 const data = ref([])
 const details_visible = ref(false);
 const getData = () => {
@@ -49,10 +55,44 @@ const getUsername = () => {
 
 }
 getUsername()
-// const detailDa
+const deleteUser = (row) => {
+  console.log(row)
+  confirm.require({
+    header: 'Delete User',
+    message: 'Are you confirm to delete user ' + row.username + ' ?',
+    rejectClass: 'p-button-secondary',
+    rejectLabel: 'Cancel',
+    acceptClass: 'p-button-danger',
+    acceptLabel: 'Delete',
+    accept: () => {
+      const config = {
+        method: 'delete',
+        url: '/admin/users/' + row.id,
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      };
+      axios(config)
+          .then(response => {
+            toast.add({
+              severity: 'success',
+              summary: 'Notification',
+              detail: 'User ' + row.username + ' was successfully deleted!',
+              life: 2500
+            })
+            getData()
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    }
+  })
+}
 </script>
 
 <template>
+  <ConfirmDialog />
+  <Toast />
   <div>
     <Dialog v-model:visible="details_visible" header="User Details" modal>
       <UserDetailsViewer :username="detailData.username"
@@ -93,6 +133,7 @@ getUsername()
           <Button label="Delete"
                   size="small"
                   severity="danger"
+                  @click="deleteUser(line.data)"
                   :disabled="username === line.data.username" style="margin-left: 0.4rem"></Button>
         </template>
       </Column>

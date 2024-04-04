@@ -81,7 +81,10 @@ const items = ref([
       },
       {
         label: 'Images',
-        icon: 'pi pi-th-large'
+        icon: 'pi pi-th-large',
+        command: () => {
+          router.push({name: 'images'})
+        }
       },
       {
         label: 'Networks',
