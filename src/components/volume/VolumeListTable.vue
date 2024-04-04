@@ -4,6 +4,7 @@ import Column from 'primevue/column';
 import axios from "axios";
 import {ref} from "vue";
 import VolumeDetailsViewer from "@/components/volume/VolumeDetailsViewer.vue";
+import VolumeActionPanel from "@/components/volume/VolumeActionPanel.vue";
 const data = ref([])
 
 const getData = () => {
@@ -41,12 +42,16 @@ getData()
           {{ row.data.container_ids.length }}
         </template>
       </Column>
-      <Column field="" header="Operation">
+      <Column field="" header="Action">
         <template #body="row">
-          <VolumeDetailsViewer :name="row.data.custom_name"
-                               :size="row.data.size"
-                               :id="row.data.id"
-                               :container-ids="row.data.container_ids"/>
+          <div style="display: flex; margin-right: 0.5rem">
+            <VolumeDetailsViewer :name="row.data.custom_name"
+                                 :size="row.data.size"
+                                 :id="row.data.id"
+                                 :container-ids="row.data.container_ids"/>
+            <VolumeActionPanel :id="row.data.id" :size="row.data.size"/>
+          </div>
+
 
         </template>
       </Column>

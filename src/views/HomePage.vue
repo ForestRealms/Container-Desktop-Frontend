@@ -80,9 +80,9 @@ test()
   background: linear-gradient(rgba(255, 255, 255, var(--opacity)),
   rgba(255, 255, 255, var(--opacity))),
   url('../assets/background3.jpg') no-repeat center center fixed;
-  //-webkit-background-size: cover;
-  //-moz-background-size: cover;
-  //-o-background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 

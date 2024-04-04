@@ -1,4 +1,4 @@
-let baseURL = "http://192.168.17.102:8080";
-export const remoteBaseURL = "https://192.168.17.102"
+let baseURL = "http://124.223.79.51:8080";
+export const remoteBaseURL = "https://124.223.79.51"
 export default baseURL;
 export const defaultTheme = 'aura-light-blue'
