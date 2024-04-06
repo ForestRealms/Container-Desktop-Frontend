@@ -18,7 +18,6 @@ const test = () => {
       .then((response) => {
         const condition = response.status === 401 && response.data.message === 'Unauthorized Access'
         if (!condition) {
-          console.log("已经登录过了")
           router.push({name: "overview"})
         }
       })
