@@ -56,10 +56,16 @@ const items = ref([
       {
         label: "Edit Profile",
         icon: 'pi pi-user-edit',
+        command: () => {
+          router.push({name: 'profile'})
+        }
       },
       {
         label: "Sign out",
-        icon: 'pi pi-sign-out'
+        icon: 'pi pi-sign-out',
+        command: () => {
+          signOut()
+        }
       }
     ]
   },
@@ -88,7 +94,10 @@ const items = ref([
       },
       {
         label: 'Networks',
-        icon: 'pi pi-sitemap'
+        icon: 'pi pi-sitemap',
+        command: () => {
+          router.push({name: 'networks'})
+        }
       }
 
     ]

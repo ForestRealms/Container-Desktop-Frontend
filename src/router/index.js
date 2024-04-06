@@ -8,6 +8,8 @@ import UserControlPanel from "@/views/UserControlPanel.vue";
 import HomePage from "@/views/HomePage.vue";
 import UserManagement from "@/views/AdminUserInterface/UserManagement.vue";
 import ImageManagement from "@/views/AdminUserInterface/ImageManagement.vue";
+import NetworkManagement from "@/views/AdminUserInterface/NetworkManagement.vue";
+import UserProfile from "@/views/UserProfile.vue";
 
 const routes = [
     {
@@ -47,6 +49,16 @@ const routes = [
                 path: 'images',
                 name: 'images',
                 component: ImageManagement
+            },
+            {
+                path: 'networks',
+                name: 'networks',
+                component: NetworkManagement
+            },
+            {
+                path: 'profile',
+                name: 'profile',
+                component: UserProfile
             }
         ]
     }
