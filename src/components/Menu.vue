@@ -83,13 +83,23 @@ const items = ref([
       },
       {
         label: 'Instances',
-        icon: 'pi pi-server'
+        icon: 'pi pi-server',
+        command: () => {
+          router.push({name: 'instance-management'})
+        }
       },
       {
         label: 'Images',
         icon: 'pi pi-th-large',
         command: () => {
           router.push({name: 'images'})
+        }
+      },
+      {
+        label: 'Volumes',
+        icon: "pi pi-database",
+        command: () => {
+          router.push({name: 'volumes-management'})
         }
       },
       {

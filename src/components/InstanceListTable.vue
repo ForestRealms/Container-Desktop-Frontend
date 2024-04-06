@@ -16,10 +16,16 @@ import OperationGroupPanel from "@/components/OperationGroupPanel.vue";
 const data = ref([]);
 const toast = useToast();
 const router = useRouter();
+const params = defineProps({
+  'admin': {
+    type: Boolean,
+    default: false
+  }
+})
 const getData = () => {
   const config = {
     method: 'get',
-    url: '/containers/',
+    url: params.admin? '/admin/containers/' : '/containers/',
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('token')
     }
@@ -140,6 +146,7 @@ const refresh = (notify=true) => {
                     severity="secondary"
                     @click="onClickDetailsButton(line.data)"></Button>
             <OperationPanel :id="line.data.id"
+                            :admin="params.admin"
                             :name="line.data.custom_name"
                             :power-status="line.data.power_status"
                             @update="refresh(false)"

@@ -17,6 +17,10 @@ const params = defineProps({
   },
   powerStatus: {
     type: String,
+  },
+  admin: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -34,9 +38,10 @@ const updateInstance = (status, notify=true) => {
   const data = JSON.stringify({
     "power_status": status
   });
+  const base = params.admin? '/containers/': '/admin/containers/'
   const config = {
     method: 'put',
-    url: '/containers/' + params.id,
+    url: base + params.id,
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'
@@ -69,9 +74,10 @@ const stopInstance = () => {
 }
 
 const removeInstance = () => {
+  const base = params.admin? '/containers/': '/admin/containers/'
   const config = {
     method: 'delete',
-    url: '/containers/' + params.id,
+    url: base + params.id,
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('token'),
     }
