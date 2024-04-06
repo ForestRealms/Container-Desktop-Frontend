@@ -6,8 +6,8 @@ import VolumeList from "@/views/VolumeList.vue";
 import Overview from "@/views/Overview.vue";
 import UserControlPanel from "@/views/UserControlPanel.vue";
 import HomePage from "@/views/HomePage.vue";
-import UserManagement from "@/views/UserManagement.vue";
-import ImageManagement from "@/views/ImageManagement.vue";
+import UserManagement from "@/views/AdminUserInterface/UserManagement.vue";
+import ImageManagement from "@/views/AdminUserInterface/ImageManagement.vue";
 
 const routes = [
     {
