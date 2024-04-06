@@ -7,6 +7,7 @@ import Overview from "@/views/Overview.vue";
 import UserControlPanel from "@/views/UserControlPanel.vue";
 import HomePage from "@/views/HomePage.vue";
 import UserManagement from "@/views/UserManagement.vue";
+import ImageManagement from "@/views/ImageManagement.vue";
 
 const routes = [
     {
@@ -41,6 +42,11 @@ const routes = [
                 path: 'users',
                 name: 'users',
                 component: UserManagement
+            },
+            {
+                path: 'images',
+                name: 'images',
+                component: ImageManagement
             }
         ]
     }
