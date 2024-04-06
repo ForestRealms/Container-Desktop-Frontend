@@ -6,11 +6,17 @@ import {ref} from "vue";
 import VolumeDetailsViewer from "@/components/volume/VolumeDetailsViewer.vue";
 import VolumeActionPanel from "@/components/volume/VolumeActionPanel.vue";
 const data = ref([])
-
+const params = defineProps({
+  admin: {
+    type: Boolean,
+    default: false
+  }
+})
 const getData = () => {
+  const base = params.admin? '/admin/volumes/': '/volumes/'
   const config = {
     method: 'get',
-    url: '/volumes/',
+    url: base,
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('token'),
     }
@@ -48,11 +54,13 @@ getData()
             <VolumeDetailsViewer :name="row.data.custom_name"
                                  :size="row.data.size"
                                  :id="row.data.id"
-                                 :container-ids="row.data.container_ids"/>
+                                 :container-ids="row.data.container_ids"
+                                 :admin="params.admin"/>
             <VolumeActionPanel :id="row.data.id"
                                :size="row.data.size"
                                :allow-remove="row.data.container_ids.length === 0"
-                               :allow-resize="row.data.container_ids.length === 0"/>
+                               :allow-resize="row.data.container_ids.length === 0"
+                               :admin="params.admin"/>
           </div>
 
 

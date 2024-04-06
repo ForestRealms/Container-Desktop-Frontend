@@ -24,6 +24,10 @@ const params = defineProps({
   },
   'allowRemove': {
     type: Boolean
+  },
+  admin: {
+    type: Boolean,
+    default: false
   }
 })
 const resizeDialog = ref(false)
@@ -32,9 +36,10 @@ const resize = () => {
   const data = JSON.stringify({
     "size": newSize.value
   });
+  const base = params.admin? '/admin/volumes/': '/volumes/'
   const config = {
     method: 'put',
-    url: '/volumes/' + params.id,
+    url: base + params.id,
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'
@@ -57,9 +62,10 @@ const resize = () => {
 }
 
 const remove = () => {
+  const base = params.admin? '/admin/volumes/': '/volumes/'
   const config = {
     method: 'delete',
-    url: '/volumes/' + params.id,
+    url: base + params.id,
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('token'),
     }

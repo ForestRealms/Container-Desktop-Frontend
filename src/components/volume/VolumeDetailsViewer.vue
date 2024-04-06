@@ -17,6 +17,10 @@ const params = defineProps({
   containerIds: {
     type: Array,
     default: []
+  },
+  admin: {
+    type: Boolean,
+    default: false
   }
 
 })
@@ -24,9 +28,10 @@ const containerNames = ref([])
 const get = () => {
   containerNames.value = []
   for (const containerId of params.containerIds) {
+    const base = params.admin? '/admin/volumes/': '/volumes/'
     const config = {
       method: 'get',
-      url: '/containers/' + containerId,
+      url: base + containerId,
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('token'),
       }

@@ -99,7 +99,7 @@ const items = ref([
         label: 'Volumes',
         icon: "pi pi-database",
         command: () => {
-          router.push({name: 'volumes-management'})
+          router.push({name: 'volume-management'})
         }
       },
       {
