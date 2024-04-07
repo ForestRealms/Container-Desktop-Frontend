@@ -38,7 +38,7 @@ const updateInstance = (status, notify=true) => {
   const data = JSON.stringify({
     "power_status": status
   });
-  const base = params.admin? '/containers/': '/admin/containers/'
+  const base = params.admin? '/admin/containers/': '/containers/'
   const config = {
     method: 'put',
     url: base + params.id,
