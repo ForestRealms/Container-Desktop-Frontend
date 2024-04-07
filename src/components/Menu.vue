@@ -108,6 +108,12 @@ const items = ref([
         command: () => {
           router.push({name: 'networks'})
         }
+      },
+      {
+        label: 'System Information',
+        command: () => {
+          router.push({name: 'system-info'})
+        }
       }
 
     ]

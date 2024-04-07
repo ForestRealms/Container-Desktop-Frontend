@@ -5,6 +5,7 @@ import axios from "axios";
 import {ref} from "vue";
 import VolumeDetailsViewer from "@/components/volume/VolumeDetailsViewer.vue";
 import VolumeActionPanel from "@/components/volume/VolumeActionPanel.vue";
+import {getVolumeList} from "@/libraries.js";
 const data = ref([])
 const params = defineProps({
   admin: {
@@ -12,25 +13,9 @@ const params = defineProps({
     default: false
   }
 })
-const getData = () => {
-  const base = params.admin? '/admin/volumes/': '/volumes/'
-  const config = {
-    method: 'get',
-    url: base,
-    headers: {
-      'Authorization': 'Bearer ' + localStorage.getItem('token'),
-    }
-  };
-
-  axios(config)
-      .then(function (response) {
-        data.value = response.data.details
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-}
-getData()
+getVolumeList().then(res => {
+  data.value = res
+})
 
 </script>
 

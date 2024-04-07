@@ -12,6 +12,7 @@ import NetworkManagement from "@/views/AdminUserInterface/NetworkManagement.vue"
 import UserProfile from "@/views/UserProfile.vue";
 import InstanceManagement from "@/views/AdminUserInterface/InstanceManagement.vue";
 import VolumeManagement from "@/views/AdminUserInterface/VolumeManagement.vue";
+import SystemInfo from "@/views/AdminUserInterface/SystemInfo.vue";
 
 const routes = [
     {
@@ -71,6 +72,11 @@ const routes = [
                 path: 'volume-management',
                 name: 'volume-management',
                 component: VolumeManagement
+            },
+            {
+                path: 'system-info',
+                name: 'system-info',
+                component: SystemInfo
             }
         ]
     }

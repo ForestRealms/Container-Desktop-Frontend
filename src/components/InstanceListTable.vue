@@ -12,6 +12,7 @@ import {ref} from "vue";
 import DetailsViewer from "@/components/DetailsViewer.vue";
 import OperationPanel from "@/components/OperationPanel.vue";
 import OperationGroupPanel from "@/components/OperationGroupPanel.vue";
+import {getInstanceList} from "@/libraries.js";
 
 const data = ref([]);
 const toast = useToast();
@@ -22,33 +23,6 @@ const params = defineProps({
     default: false
   }
 })
-const getData = () => {
-  const config = {
-    method: 'get',
-    url: params.admin? '/admin/containers/' : '/containers/',
-    headers: {
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    }
-  };
-
-  axios(config)
-      .then(response => {
-        data.value = response.data.details
-      })
-      .catch(error => {
-        if (error.response.status === 401) {
-          toast.add({
-            severity: 'error',
-            summary: '错误',
-            detail: '未登录，现在跳转到登录页面',
-            life: 1000
-          })
-          setTimeout(() => {
-            router.push({name: 'login'})
-          }, 1500)
-        }
-      });
-}
 
 const renderText = (text) => {
   if (text === 'POWER_OFF') return "Stopped"
@@ -62,7 +36,9 @@ const getSeverity = (text) => {
   if (text === 'STOPPING') return 'warning'
   if (text === 'STARTING') return 'warning'
 }
-getData()
+getInstanceList(params.admin).then(res => {
+  data.value = res
+})
 
 let selectedInstance = ref([])
 const detail_visible = ref(false)
@@ -73,7 +49,9 @@ const onClickDetailsButton = (details_text) => {
 }
 
 const refresh = (notify=true) => {
-  getData()
+  getInstanceList(params.admin).then(res => {
+    data.value = res
+  })
   selectedInstance = ref([])
   if (notify) {
     toast.add({

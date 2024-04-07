@@ -6,10 +6,10 @@ import App from './App.vue'
 import ToastService from 'primevue/toastservice';
 import router from './router/index'
 import 'primeicons/primeicons.css'
-import baseURL from "../public/config.js";
 import axios from "axios";
 import {useCssVar} from "@vueuse/core";
 import ConfirmationService from 'primevue/confirmationservice';
+import {application} from "../public/config.js";
 
 
 const app = createApp(App);
@@ -18,7 +18,7 @@ app.use(ToastService);
 app.use(ConfirmationService);
 app.use(router)
 
-axios.defaults.baseURL = baseURL
+axios.defaults.baseURL = application.baseURL
 axios.interceptors.response.use(
     (response) => {
         return response

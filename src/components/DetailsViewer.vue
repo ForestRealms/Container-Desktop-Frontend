@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from "vue";
 import Button from "primevue/button";
-import {remoteBaseURL} from '../../public/config.js'
+import {application} from "../../public/config.js";
 const params = defineProps({
   id: {
     type: String
@@ -41,7 +41,7 @@ const getId = () => {
 getId(params.id)
 
 const connect = () => {
-  window.open(remoteBaseURL + ':' + params.remotePort, '_blank')
+  window.open(application.remoteBaseURL + ':' + params.remotePort, '_blank')
 }
 </script>
 
