@@ -13,7 +13,7 @@ const params = defineProps({
     default: false
   }
 })
-getVolumeList().then(res => {
+getVolumeList(params.admin).then(res => {
   data.value = res
 })
 

@@ -17,8 +17,9 @@ app.use(PrimeVue);
 app.use(ToastService);
 app.use(ConfirmationService);
 app.use(router)
+app.config.globalProperties.baseURL = application.baseURL
 
-axios.defaults.baseURL = application.baseURL
+axios.defaults.baseURL = app.config.globalProperties.baseURL
 axios.interceptors.response.use(
     (response) => {
         return response

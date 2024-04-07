@@ -98,7 +98,7 @@ const deleteUser = (row) => {
       <UserDetailsViewer :username="detailData.username"
                          :roles="detailData.roles"
                          :container-ids="detailData.container_ids"
-                         :volume-ids="detailData.volume_ids"/>
+                         :volume-ids="detailData.owned_volume_ids"/>
     </Dialog>
     <h2>Users</h2>
     <DataTable :value="data">
