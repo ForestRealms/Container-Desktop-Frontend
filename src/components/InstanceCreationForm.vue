@@ -269,11 +269,17 @@ const start_button_disabled = ref(false)
                   </i>
                   {{selectedImage.min_vcpus}}
                 </li>
-                <li>
+                <li class="gap">
                   <i>
                     Minimum RAM Requirement:
                   </i>
                   {{selectedImage.min_ram / 1024}} GB
+                </li>
+                <li>
+                  <i>
+                    Minimum Root Disk Requirement:
+                  </i>
+                  {{selectedImage.min_root_disk}} GB
                 </li>
               </Panel>
             </div>
