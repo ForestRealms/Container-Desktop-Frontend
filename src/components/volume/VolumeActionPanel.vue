@@ -55,6 +55,7 @@ const resize = () => {
           detail: 'Volume ' + params.id + ' was successfully resized!',
           life: 2500
         })
+        resizeDialog.value = false
       })
       .catch(error => {
         console.log(error);
