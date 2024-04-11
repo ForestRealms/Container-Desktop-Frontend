@@ -111,6 +111,7 @@ const items = ref([
       },
       {
         label: 'System Information',
+        icon: 'pi pi-info-circle',
         command: () => {
           router.push({name: 'system-info'})
         }
