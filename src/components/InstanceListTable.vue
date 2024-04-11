@@ -99,6 +99,8 @@ const refresh = (notify=true) => {
                selection-mode="multiple">
 <!--      <Column selectionMode="multiple"></Column>-->
       <Column field="custom_name" header="名称"></Column>
+      <Column field="owner_id" header="Owner ID" v-if="params.admin">
+      </Column>
       <Column field="vcpus" header="CPU" style="width: 10%"></Column>
       <Column field="ram" header="RAM" style="width: 10%">
         <template #body="line">
