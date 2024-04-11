@@ -194,7 +194,6 @@ const create = () => {
       "VNC_PASSWD": password.value
     }
   });
-  console.log("创建！")
   const config = {
     method: 'post',
     url: '/containers/',

@@ -23,6 +23,7 @@ getVolumeList(params.admin).then(res => {
   <div>
     <DataTable :value="data">
       <Column field="custom_name" header="Name"></Column>
+      <Column field="owner_id" header="Owner ID" v-if="params.admin" />
       <Column field="size" header="Size">
         <template #body="row">
           {{row.data.size + " GB"}}
