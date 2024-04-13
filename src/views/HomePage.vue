@@ -18,7 +18,6 @@ const test = () => {
       .then((response) => {
         const condition = response.status === 401 && response.data.message === 'Unauthorized Access'
         if (!condition) {
-          console.log("已经登录过了")
           router.push({name: "overview"})
         }
       })
@@ -80,9 +79,9 @@ test()
   background: linear-gradient(rgba(255, 255, 255, var(--opacity)),
   rgba(255, 255, 255, var(--opacity))),
   url('../assets/background3.jpg') no-repeat center center fixed;
-  //-webkit-background-size: cover;
-  //-moz-background-size: cover;
-  //-o-background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 

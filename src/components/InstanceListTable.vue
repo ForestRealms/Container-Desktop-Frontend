@@ -12,37 +12,17 @@ import {ref} from "vue";
 import DetailsViewer from "@/components/DetailsViewer.vue";
 import OperationPanel from "@/components/OperationPanel.vue";
 import OperationGroupPanel from "@/components/OperationGroupPanel.vue";
+import {getInstanceList} from "@/libraries.js";
 
 const data = ref([]);
 const toast = useToast();
 const router = useRouter();
-const getData = () => {
-  const config = {
-    method: 'get',
-    url: '/containers/',
-    headers: {
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    }
-  };
-
-  axios(config)
-      .then(response => {
-        data.value = response.data.details
-      })
-      .catch(error => {
-        if (error.response.status === 401) {
-          toast.add({
-            severity: 'error',
-            summary: '错误',
-            detail: '未登录，现在跳转到登录页面',
-            life: 1000
-          })
-          setTimeout(() => {
-            router.push({name: 'login'})
-          }, 1500)
-        }
-      });
-}
+const params = defineProps({
+  'admin': {
+    type: Boolean,
+    default: false
+  }
+})
 
 const renderText = (text) => {
   if (text === 'POWER_OFF') return "Stopped"
@@ -56,7 +36,9 @@ const getSeverity = (text) => {
   if (text === 'STOPPING') return 'warning'
   if (text === 'STARTING') return 'warning'
 }
-getData()
+getInstanceList(params.admin).then(res => {
+  data.value = res
+})
 
 let selectedInstance = ref([])
 const detail_visible = ref(false)
@@ -67,7 +49,9 @@ const onClickDetailsButton = (details_text) => {
 }
 
 const refresh = (notify=true) => {
-  getData()
+  getInstanceList(params.admin).then(res => {
+    data.value = res
+  })
   selectedInstance = ref([])
   if (notify) {
     toast.add({
@@ -115,6 +99,8 @@ const refresh = (notify=true) => {
                selection-mode="multiple">
 <!--      <Column selectionMode="multiple"></Column>-->
       <Column field="custom_name" header="名称"></Column>
+      <Column field="owner_id" header="Owner ID" v-if="params.admin">
+      </Column>
       <Column field="vcpus" header="CPU" style="width: 10%"></Column>
       <Column field="ram" header="RAM" style="width: 10%">
         <template #body="line">
@@ -140,6 +126,7 @@ const refresh = (notify=true) => {
                     severity="secondary"
                     @click="onClickDetailsButton(line.data)"></Button>
             <OperationPanel :id="line.data.id"
+                            :admin="params.admin"
                             :name="line.data.custom_name"
                             :power-status="line.data.power_status"
                             @update="refresh(false)"

@@ -56,10 +56,16 @@ const items = ref([
       {
         label: "Edit Profile",
         icon: 'pi pi-user-edit',
+        command: () => {
+          router.push({name: 'profile'})
+        }
       },
       {
         label: "Sign out",
-        icon: 'pi pi-sign-out'
+        icon: 'pi pi-sign-out',
+        command: () => {
+          signOut()
+        }
       }
     ]
   },
@@ -77,15 +83,38 @@ const items = ref([
       },
       {
         label: 'Instances',
-        icon: 'pi pi-server'
+        icon: 'pi pi-server',
+        command: () => {
+          router.push({name: 'instance-management'})
+        }
       },
       {
         label: 'Images',
-        icon: 'pi pi-th-large'
+        icon: 'pi pi-th-large',
+        command: () => {
+          router.push({name: 'images'})
+        }
+      },
+      {
+        label: 'Volumes',
+        icon: "pi pi-database",
+        command: () => {
+          router.push({name: 'volume-management'})
+        }
       },
       {
         label: 'Networks',
-        icon: 'pi pi-sitemap'
+        icon: 'pi pi-sitemap',
+        command: () => {
+          router.push({name: 'networks'})
+        }
+      },
+      {
+        label: 'System Information',
+        icon: 'pi pi-info-circle',
+        command: () => {
+          router.push({name: 'system-info'})
+        }
       }
 
     ]
