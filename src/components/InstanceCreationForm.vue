@@ -194,6 +194,7 @@ const create = () => {
       "VNC_PASSWD": password.value
     }
   });
+  console.log(data)
   const config = {
     method: 'post',
     url: '/containers/',
@@ -219,7 +220,7 @@ const create = () => {
 
       })
       .catch(error => {
-        console.log(error);
+        console.log(error.response);
         start_button_disabled.value = false
       });
 
